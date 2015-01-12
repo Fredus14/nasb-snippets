@@ -1,0 +1,40 @@
+---
+title: "Normalization"
+output:
+  html_document:
+    keep_md: yes
+---
+## Z-score Normalization
+
+```{r}
+original <- matrix(c(
+    2,  4,  4,
+    5,  4,  14,
+    4,  6,  8,
+    3,  5,  8,
+    3,  3,  9
+), ncol = 3, byrow = TRUE)
+original
+```
+
+
+```{r}
+means <- rowMeans(original)
+stddevs <- apply(original, 1, sd)
+cbind(means, stddevs)
+```
+
+```{r}
+centered <- original - means
+centered
+```
+
+```{r}
+normalized <- centered / stddevs
+normalized
+```
+
+```{r}
+rowMeans(normalized)
+apply(normalized, 1, sd)
+```
