@@ -1,9 +1,19 @@
 ---
-title: "Normalization"
+title: "Data normalization"
 output:
   html_document:
     keep_md: yes
 ---
+Required libraries:
+
+[preprocessCore](http://www.bioconductor.org/packages/release/bioc/html/preprocessCore.html)
+[ggplot2](http://docs.ggplot2.org/)
+
+```{r}
+library(ggplot2)
+library(preprocessCore)
+```
+
 ## Z-score Normalization
 
 ```{r}
@@ -37,4 +47,15 @@ normalized
 ```{r}
 rowMeans(normalized)
 apply(normalized, 1, sd)
+```
+
+
+## Quantile Normalization
+```{r}
+preprocessCore::normalize.quantiles(original)
+```
+
+## Median Polish Normalization
+```{r}
+preprocessCore::rcModelMedianPolish(original)
 ```
