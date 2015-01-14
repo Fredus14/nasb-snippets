@@ -11,8 +11,21 @@ Required libraries:
 
 ```{r}
 library(ggplot2)
+library(reshape2)
+library(dplyr)
 library(preprocessCore)
 ```
+
+## Example data
+
+```{r}
+ngenes <- 5
+nsamples <- 6
+
+
+```
+
+
 
 ## Z-score Normalization
 
