@@ -10,7 +10,9 @@ Required libraries:
 [ggplot2](http://docs.ggplot2.org/)
 
 ```{r}
+library(GeoDE)
 library(ggplot2)
+library(scales) 
 library(reshape2)
 library(dplyr)
 library(preprocessCore)
@@ -19,10 +21,19 @@ library(preprocessCore)
 ## Example data
 
 ```{r}
-ngenes <- 5
-nsamples <- 6
+str(example_expression_data)
 
+data(example_expression_data, package = "GeoDE")
 
+ggplot(melt(example_expression_data), aes(x=value, col=variable)) + geom_density() + theme_bw()
+
+ggplot(melt(example_expression_data), aes(x=value, col=genenames)) + geom_density() + theme_bw() + scale_x_log10() + guides(colour=FALSE)
+
+example_expression_data_norm <- example_expression_data
+
+example_expression_data_norm[, 2:7] <- t(apply(example_expression_data[, 2:7], 1, scale))
+
+ggplot(melt(example_expression_data_norm), aes(x=value, col=genenames)) + geom_density() + theme_bw() + guides(colour=FALSE)
 ```
 
 
@@ -65,7 +76,13 @@ apply(normalized, 1, sd)
 
 ## Quantile Normalization
 ```{r}
-preprocessCore::normalize.quantiles(original)
+
+dn <- setNames(as.data.frame(preprocessCore::normalize.quantiles(as.matrix(d))), c('x', 'y'))
+
+d <- data.frame(x=c(rep(1, 1000), rep(2000, 1000)), y=rnorm(2000))
+d <- data.frame(x=rpois(2000, 1), y=rnorm(2000))
+
+
 ```
 
 ## Median Polish Normalization
