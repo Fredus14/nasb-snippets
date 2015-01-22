@@ -1,0 +1,68 @@
+---
+title: "Data normalization"
+output:
+  html_document:
+    keep_md: yes
+---
+Required libraries:
+
+[preprocessCore](http://www.bioconductor.org/packages/release/bioc/html/preprocessCore.html)
+[ggplot2](http://docs.ggplot2.org/)
+
+```{r}
+library(GeoDE)
+library(GEOquery)
+library(preprocessCore)
+
+library(reshape2)
+library(dplyr)
+
+library(ggplot2)
+library(scales)
+library(gridExtra)
+```
+
+## Example data
+
+```{r}
+gds3773 <- getGEO('GDS3773', GSEMatrix=TRUE)
+```
+
+
+```{r}
+gds3773
+```
+
+```{r}
+datain <- Table(gds3773)[, -1]
+
+sampleclass <- factor(grepl('control', Columns(gds3773)$description), levels=c(TRUE, FALSE), labels=c('1', '2'))      
+                      
+datain[, -1] <- {
+    apply(Table(gds3773)[, -c(1, 2)], 2, function(x) as.numeric(as.character(x)))
+}
+
+datain <- datain[complete.cases(datain), ]
+```
+
+```{r}
+p <- ggplot(melt(datain, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773')
+```
+
+```{r}
+
+datain[, -1] <- normalize.quantiles(as.matrix(datain[, -1]))
+p <- ggplot(melt(datain, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Normalized quantiles')
+```
+
+
+```{r}
+
+datain <- datain[!grepl('control|^chr', datain$IDENTIFIER), ]
+cd <- GeoDE::chdirAnalysis(na.omit(datain), sampleclass, nnull = 1000)
+```
+
+
+1. Ramadoss, P., Chiappini, F., Bilban, M. & Hollenberg, A. N. Regulation of hepatic six transmembrane epithelial antigen of prostate 4 (STEAP4) expression by STAT3 and CCAAT/enhancer-binding protein alpha. J. Biol. Chem. 285, 16453–16466 (2010).
