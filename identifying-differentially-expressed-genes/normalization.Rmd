@@ -4,12 +4,8 @@ output:
   html_document:
     keep_md: yes
 ---
-Required libraries:
 
-[preprocessCore](http://www.bioconductor.org/packages/release/bioc/html/preprocessCore.html)
-[ggplot2](http://docs.ggplot2.org/)
-
-```{r}
+```{r, message=FALSE}
 library(GeoDE)
 library(GEOquery)
 
@@ -24,13 +20,21 @@ library(gridExtra)
 
 ## Loading dataset
 
-```{r}
+```{r, message=FALSE}
 gds3773 <- getGEO('GDS3773', GSEMatrix=TRUE)
+
 ```
 
+## Basic information:
 
 ```{r}
-gds3773
+Meta(gds3773)$platform_organism
+Meta(gds3773)$description[1]
+Meta(gds3773)$feature_count
+Meta(gds3773)$sample_count
+Meta(gds3773)$sample_type
+Meta(gds3773)$platform_technology_type
+Columns(gds3773)
 ```
 
 ## Convert data to numerics
