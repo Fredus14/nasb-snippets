@@ -12,8 +12,8 @@ Required libraries:
 ```{r}
 library(GeoDE)
 library(GEOquery)
-library(preprocessCore)
 
+library(preprocessCore)
 library(reshape2)
 library(dplyr)
 
@@ -22,7 +22,7 @@ library(scales)
 library(gridExtra)
 ```
 
-## Example data
+## Loading dataset
 
 ```{r}
 gds3773 <- getGEO('GDS3773', GSEMatrix=TRUE)
@@ -33,35 +33,56 @@ gds3773 <- getGEO('GDS3773', GSEMatrix=TRUE)
 gds3773
 ```
 
+## Convert data to numerics
+
 ```{r}
-datain <- Table(gds3773)[, -1]
+gds3773_data <- Table(gds3773)[, -1]
 
 sampleclass <- factor(grepl('control', Columns(gds3773)$description), levels=c(TRUE, FALSE), labels=c('1', '2'))      
                       
-datain[, -1] <- {
+gds3773_data [, -1] <- {
     apply(Table(gds3773)[, -c(1, 2)], 2, function(x) as.numeric(as.character(x)))
 }
 
-datain <- datain[complete.cases(datain), ]
+gds3773_data <- gds3773_data[complete.cases(gds3773_data), ]
 ```
 
+## Plot "raw" data
+
 ```{r}
-p <- ggplot(melt(datain, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p <- ggplot(melt(gds3773_data, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
 p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773')
 ```
 
-```{r}
+## Normalize quantiles
 
-datain[, -1] <- normalize.quantiles(as.matrix(datain[, -1]))
-p <- ggplot(melt(datain, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+```{r}
+gds3773_data_normalized_quantiles <- gds3773_data
+gds3773_data_normalized_quantiles[, -1] <- normalize.quantiles(as.matrix(gds3773_data[, -1]))
+
+p <- ggplot(melt(gds3773_data_normalized_quantiles, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
 p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Normalized quantiles')
 ```
 
+## Median polish
+
+```{r}
+gds3773_data_median_polished <- gds3773_data
+gds3773_data_median_polished[, -1] <- gds3773_data_median_polished[, -1] - {
+    mp <- preprocessCore::rcModelMedianPolish(as.matrix(gds3773_data_normalized_quantiles[, -1]))
+    mp$Residuals
+}
+
+p <- ggplot(melt(gds3773_data_median_polished, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Median polished')
+```
+
+
 
 ```{r}
 
-datain <- datain[!grepl('control|^chr', datain$IDENTIFIER), ]
-cd <- GeoDE::chdirAnalysis(na.omit(datain), sampleclass, nnull = 1000)
+gds3773_data <- gds3773_data[!grepl('control|^chr', gds3773_data$IDENTIFIER), ]
+cd <- GeoDE::chdirAnalysis(na.omit(gds3773_data), sampleclass, nnull = 1000)
 ```
 
 
