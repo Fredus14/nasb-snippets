@@ -77,6 +77,19 @@ p <- ggplot(melt(gds3773_data_median_polished, id.vars = 'IDENTIFIER'), aes(x = 
 p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Median polished')
 ```
 
+## Z-score normalize
+
+```{r}
+gds3773_z_score_normalized <- gds3773_data
+gds3773_z_score_normalized[, -1] <- gds3773_z_score_normalized[, -1] - {
+    rowmeans <- apply(gds3773_z_score_normalized[, -1], 1, mean)
+    rowstds <- apply(gds3773_z_score_normalized[, -1], 1, sd)
+    (gds3773_z_score_normalized[, -1] - rowmeans) / rowstds
+}
+
+p <- ggplot(melt(gds3773_z_score_normalized, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Z-score normalized')
+```
 
 
 ```{r}
