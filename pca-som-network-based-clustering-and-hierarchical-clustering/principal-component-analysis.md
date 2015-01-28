@@ -48,7 +48,7 @@ Extract cooridnates of observations in the principal component space and plot fi
 gds4198_pc_x <- as.data.frame(gds4198_pc$x)
 gds4198_pc_x$subtype <- gds4198$subtypes
 
-plot_pc(x = gds4198_pc_x)
+plot_pc(x=gds4198_pc_x, main='GDS4198 - first three principal components')
 ```
 
 ![](principal-component-analysis_files/figure-html/unnamed-chunk-4-1.png) 

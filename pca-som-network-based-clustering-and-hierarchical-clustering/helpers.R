@@ -40,7 +40,7 @@ extract_legend <- function(p){
 #' @param x data.frame
 #' @return grid
 #'
-plot_pc <- function(x) {
+plot_pc <- function(x, main) {
     pc_3_1 <- add_options(ggplot(x, aes(x = PC3, y = PC1, col=subtype, shape = subtype)))
     pc_2_1 <- add_options(ggplot(x, aes(x = PC2, y = PC1, col=subtype, shape = subtype)))
     pc_2_3 <- add_options(ggplot(x, aes(x = PC2, y = PC3, col=subtype, shape = subtype)))
@@ -50,6 +50,7 @@ plot_pc <- function(x) {
         pc_2_1 + theme(legend.position = "none"),
         extract_legend(pc_3_1),
         pc_2_3 + theme(legend.position = "none"),
-        ncol = 2
+        ncol = 2,
+        main = main
     )
 }
