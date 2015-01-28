@@ -6,31 +6,33 @@ output:
 ---
 
 ```{r, message=FALSE}
-library(GeoDE)
-
 library(preprocessCore)
 library(reshape2)
-library(dplyr)
 
 library(ggplot2)
-library(scales)
-library(gridExtra)
+
+library(pander)
+panderOptions('table.alignment.default', 'left')
+panderOptions('table.alignment.rownames', 'left')
 
 source('helpers.R', local=TRUE)
 ```
 
 ## Loading dataset
 
-```{r, message=FALSE}
+```{r load_gds3773, message=FALSE, cache=TRUE}
 gds3773 <- get_gds3773()
 gds3773_data <- gds3773$data
 ```
 
 ## Basic information:
 
-```{r}
-gds3773$meta
-gds3773$columns
+```{r, results='asis'}
+pandoc.table(gds3773$meta)
+```
+
+```{r, results='asis'}
+pandoc.table(gds3773$columns)
 ```
 
 
@@ -47,7 +49,9 @@ p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773')
 gds3773_data_normalized_quantiles <- gds3773_data
 gds3773_data_normalized_quantiles[, -1] <- normalize.quantiles(as.matrix(gds3773_data[, -1]))
 
-p <- ggplot(melt(gds3773_data_normalized_quantiles, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p <- ggplot(
+    melt(gds3773_data_normalized_quantiles, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable)
+)
 p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Normalized quantiles')
 ```
 
@@ -60,7 +64,9 @@ gds3773_data_median_polished[, -1] <- gds3773_data_median_polished[, -1] - {
     mp$Residuals
 }
 
-p <- ggplot(melt(gds3773_data_median_polished, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p <- ggplot(
+    melt(gds3773_data_median_polished, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable)
+)
 p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Median polished')
 ```
 
@@ -74,7 +80,9 @@ gds3773_z_score_normalized[, -1] <- gds3773_z_score_normalized[, -1] - {
     (gds3773_z_score_normalized[, -1] - rowmeans) / rowstds
 }
 
-p <- ggplot(melt(gds3773_z_score_normalized, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable))
+p <- ggplot(
+    melt(gds3773_z_score_normalized, id.vars = 'IDENTIFIER'), aes(x = value, colour = variable)
+)
 p + geom_density(na.rm = TRUE) + theme_bw() + ggtitle('GDS3773 Z-score normalized')
 ```
 
