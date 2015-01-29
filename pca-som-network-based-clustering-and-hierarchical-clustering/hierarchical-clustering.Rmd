@@ -27,5 +27,3 @@ gds4198_samples_hc <- hclust(gds4198_samples_dm)
 plot(dendrapply(as.dendrogram(gds4198_samples_hc), color_by_subtype, colnames(gds4198$data), gds4198$subtypes))
 title('Dendrogram GDS4198, complete linkage')
 ```
-
-
