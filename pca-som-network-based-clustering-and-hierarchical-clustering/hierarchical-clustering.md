@@ -3,6 +3,7 @@
 
 ```r
 library(gplots)
+library(pheatmap)
 library(dplyr)
 
 source('helpers.R', local=TRUE)
@@ -39,7 +40,26 @@ expr_df <- data.frame(gene = gds4198$genes, gds4198$data) %>% group_by(gene) %>%
 expr_df <- expr_df %>% filter(gene %in% top_accross_conditions(expr_df))
 expr_matrix <- data.matrix(expr_df[, -1])
 rownames(expr_matrix) <- expr_df$gene
-heatmap.2(expr_matrix, trace='none', density.info='none', col=colorRampPalette(c('#f0f0f0', '#636363'))(70))
+
+gplots::heatmap.2(
+    expr_matrix, trace='none', density.info='none',
+    col=colorRampPalette(c('#f0f0f0', '#636363'))(70),
+    ColSideColors=c('#66c2a5', '#fc8d62', '#8da0cb')[gds4198$subtypes]
+)
 ```
 
 ![](hierarchical-clustering_files/figure-html/unnamed-chunk-5-1.png) 
+
+## Pretty heatmap
+
+
+```r
+ann <- data.frame(subtype=gds4198$subtypes)
+rownames(ann) <- colnames(gds4198$data)
+pheatmap::pheatmap(
+    expr_matrix, annotation=ann,
+    annotation_colors=list(subtype=setNames(c('#66c2a5', '#fc8d62', '#8da0cb'), c('invasive', 'metabolic', 'proliferative')))
+)
+```
+
+![](hierarchical-clustering_files/figure-html/unnamed-chunk-6-1.png) 
