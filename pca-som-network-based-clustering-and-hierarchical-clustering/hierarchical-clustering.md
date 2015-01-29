@@ -63,7 +63,7 @@ ann <- data.frame(subtype=gds4198$subtypes)
 rownames(ann) <- colnames(gds4198$data)
 ann_colors <- list(subtype=setNames(
     c('#66c2a5', '#fc8d62', '#8da0cb'),
-    c('invasive', 'metabolic', 'proliferative')
+    levels(gds4198$subtypes)
 ))
 
 pheatmap::pheatmap(
