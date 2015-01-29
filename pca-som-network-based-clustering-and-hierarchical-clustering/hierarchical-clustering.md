@@ -21,7 +21,7 @@ gds4198_samples_dm <- dist(t(gds4198$data))
 gds4198_samples_hc <- hclust(gds4198_samples_dm)
 ```
 
-## Histogram
+## Dendrogram
 
 
 ```r

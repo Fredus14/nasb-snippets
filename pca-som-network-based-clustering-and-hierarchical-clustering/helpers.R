@@ -75,7 +75,7 @@ top_accross_conditions <- function(expr, n=100) {
             head(chdir$results[[1]], n)
         }
     ))
-    head(unique(names(sort(genes, decreasing = TRUE))), n)
+    head(unique(names(genes[order(abs(genes), decreasing = TRUE)])), n)
 }
 
 
