@@ -1,5 +1,6 @@
 library(GEOquery)
 library(ggplot2)
+library(GeoDE)
 
 #' Download gds4198 and extract useful bits
 #' 
@@ -53,4 +54,43 @@ plot_pc <- function(x, main) {
         ncol = 2,
         main = main
     )
+}
+
+#' Take top n differentially expressed genes 
+#' per condition and create set
+#' 
+#' @param data.frame 
+#' @return character vector
+#'
+top_accross_conditions <- function(expr, n=100) {
+    genes <- do.call(c, lapply(
+        levels(gds4198$subtypes),
+        function(x) {
+            sampleclass <- as.factor(ifelse(gds4198$subtypes == x, '1', '2'))
+            # Capture plots
+            png('/dev/null')
+            chdir <- GeoDE::chdirAnalysis(expr, sampleclass, nnull = 100)
+            dev.off()
+            # Take n top result
+            head(chdir$results[[1]], n)
+        }
+    ))
+    head(unique(names(sort(genes, decreasing = TRUE))), n)
+}
+
+
+#' Color leafs of the dendrogram by sample type
+#' 
+#' @param n node
+#' @param samples sample names
+#' @param subtypes subtypes for samples
+#' @return node
+#'
+color_by_subtype <- function(n, samples, subtypes) {
+    if (is.leaf(n)) {
+        a <- attributes(n)
+        labCol <- c('#66c2a5', '#fc8d62', '#8da0cb')[subtypes[match(a$label, samples)]]
+        attr(n, "nodePar") <- c(a$nodePar, lab.col = labCol)
+    }
+    n
 }
