@@ -9,7 +9,7 @@ library(gridExtra)
 source('helpers.R', local=TRUE)
 ```
 
-## Load dataset [1]
+## Load dataset [1, 2]
 
 
 ```r
@@ -53,4 +53,5 @@ plot_pc(x=gds4198_pc_x, main='GDS4198 - first three principal components')
 
 ![](principal-component-analysis_files/figure-html/unnamed-chunk-4-1.png) 
 
-1. Chia, N.-Y. et al. Regulatory crosstalk between lineage-survival oncogenes KLF5, GATA4 and GATA6 cooperatively promotes gastric cancer development. Gut (2014). doi:10.1136/gutjnl-2013-306596
+1. Wu, Y. et al. Comprehensive genomic meta-analysis identifies intra-tumoural stroma as a predictor of survival in patients with gastric cancer. Gut 62, 1100–1111 (2013).
+2. Chia, N.-Y. et al. Regulatory crosstalk between lineage-survival oncogenes KLF5, GATA4 and GATA6 cooperatively promotes gastric cancer development. Gut (2014). doi:10.1136/gutjnl-2013-306596
